@@ -1,0 +1,183 @@
+﻿@model Tuple<List<CompanyDto>, List<ApplicationDto>, List<RoleDto>>
+
+@{
+    ViewBag.Title = Localizer["Kullanıcı Oluştur"];
+}
+
+<h2>@Localizer["Kullanıcı Oluştur"]</h2>
+
+<form class="form-horizontal auth-form" method="post" action="/User/Create">
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="firstName">@Localizer["Ad"]</label>
+        <div class="input-group">
+            <input type="text" class="form-control" name="firstName"
+                   id="firstName" placeholder="@Localizer["Ad"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="lastName">@Localizer["Soyadı"]</label>
+        <div class="input-group">
+            <input type="text" class="form-control" name="lastName"
+                   id="lastName" placeholder="@Localizer["Soyadı"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="username">@Localizer["Kullanıcı Adı"]</label>
+        <div class="input-group">
+            <input type="text" class="form-control" name="username"
+                   id="username" placeholder="@Localizer["Kullanıcı Adı"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="useremail">@Localizer["E-posta"]</label>
+        <div class="input-group">
+            <input type="email" class="form-control" name="email"
+                   id="useremail" placeholder="@Localizer["E-posta"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="userpassword">@Localizer["Şifre"]</label>
+        <div class="input-group">
+            <input type="password" class="form-control" name="password"
+                   id="userpassword" placeholder="@Localizer["Şifre"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="conf_password">@Localizer["Şifreyi Onayla"]</label>
+        <div class="input-group">
+            <input type="password" class="form-control" name="conf-password"
+                   id="conf_password" placeholder="@Localizer["Şifreyi Onayla"]">
+        </div>
+    </div><!--end form-group-->
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="PhoneNumber">@Localizer["Telefon Numarası"]</label>
+        <div class="input-group">
+            <input type="text" class="form-control" name="PhoneNumber"
+                   id="PhoneNumber" placeholder="@Localizer["Telefon Numarası"]">
+        </div>
+    </div><!--end form-group-->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group mb-2">
+            <label class="form-label" for="companySelect">@Localizer["Şirket"]</label>
+            <select class="form-select select2" name="CompanyId" id="companySelect" required data-placeholder="-- @Localizer["Şirket Seçiniz"] --">
+                <option value=""></option>
+                @foreach (var company in Model.Item1)
+                {
+                    <option value="@company.Id">@company.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-2">
+            <label class="form-label" for="applicationSelect">@Localizer["Kullanıcının Uygulaması"]</label>
+            <select class="form-select" name="ApplicationId" id="applicationSelect" required>
+                <option value="">-- @Localizer["Uygulama Seçiniz"] --</option>
+            </select>
+        </div>
+    }
+
+    @if (User.IsInRole("TenantAdmin") || User.IsInRole("User"))
+    {
+        <div class="form-group mb-2">
+            <label class="form-label" for="applicationSelect">@Localizer["Kullanıcının Uygulaması"]</label>
+            <select class="form-select select2" name="ApplicationId" id="applicationSelect" required data-placeholder="-- @Localizer["Uygulama Seçiniz"] --">
+                <option value=""></option>
+                @foreach (var application in Model.Item2)
+                {
+                    <option value="@application.Id">@application.Name</option>
+                }
+            </select>
+        </div>
+    }
+
+    <div class="form-group mb-2">
+        <label class="form-label" for="roleSelect">@Localizer["Kullanıcının Rolü"]</label>
+        <select class="form-select select2" name="RoleId" id="roleSelect" required>
+            <option value=""></option>
+        </select>
+    </div>
+
+    <div class="form-group row my-3">
+        <div class="col-sm-12">
+            <div class="custom-control custom-switch switch-success">
+                <input type="checkbox" class="custom-control-input"
+                       id="customSwitchSuccess2">
+                <label class="form-label text-muted"
+                       for="customSwitchSuccess2">
+                    @Localizer["Uwingo Kullanım Şartlarını kabul ediyorum"]
+                </label>
+            </div>
+        </div><!--end col-->
+    </div><!--end form-group-->
+
+    <div class="form-group mb-0 row">
+        <div class="col-12">
+            <button class="btn btn-primary w-100 waves-effect waves-light"
+                    type="submit">
+                @Localizer["Kaydol"] <i class="fas fa-sign-in-alt ms-1"></i>
+            </button>
+        </div><!--end col-->
+    </div><!--end form-group-->
+</form><!--end form-->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+                if (companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetApplicationsByCompany")',
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            console.log(data);
+                            $('#applicationSelect').empty();
+                            $('#applicationSelect').append('<option value="">-- @Localizer["Uygulama Seçiniz"] --</option>');
+                            $.each(data, function (index, application) {
+                                $('#applicationSelect').append(new Option(application.name, application.id));
+                            });
+                        },
+                        error: function () {
+                            alert('@Localizer["Uygulamalar getirilirken bir hata oluştu."]');
+                        }
+                    });
+                } else {
+                    $('#applicationSelect').empty();
+                    $('#applicationSelect').append('<option value="">-- @Localizer["Uygulama Seçiniz"] --</option>');
+                }
+            });
+
+            $('#applicationSelect').change(function () {
+                var applicationId = $(this).val();
+                var companyId = $('#companySelect').val();
+
+                if (applicationId && companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetRolesByCompanyAndApplication")',
+                        type: 'GET',
+                        data: { companyId: companyId, applicationId: applicationId },
+                        success: function (data) {
+                            $('#roleSelect').empty().append('<option value="">-- @Localizer["Rol Seçiniz"] --</option>');
+                            $.each(data, function (index, role) {
+                                $('#roleSelect').append(new Option(role.name, role.id));
+                            });
+                        },
+                        error: function () {
+                            alert('@Localizer["Roller getirilirken bir hata oluştu."]');
+                        }
+                    });
+                } else {
+                    $('#roleSelect').empty().append('<option value="">-- @Localizer["Rol Seçiniz"] --</option>');
+                }
+            });
+        });
+    </script>
+}

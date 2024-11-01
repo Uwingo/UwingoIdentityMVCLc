@@ -1,0 +1,115 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Uwingo - Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/images/uwingoIco.ico">
+
+    @RenderSection("Styles", false)
+
+    <!-- App css -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/datatables/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/datatables/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+</head>
+
+<body class="">
+    <!-- Left Sidenav -->
+    <partial name="_Sidebar"></partial>
+    <!-- end left-sidenav-->
+
+    <div class="page-wrapper">
+        <!-- Top Bar Start -->
+        <div class="topbar">
+            <!-- Navbar -->
+            <nav class="navbar-custom">
+                <ul class="list-unstyled topbar-nav float-end mb-0">
+                    <li class="creat-btn">
+                        <partial name="_SelectLanguage" />
+                    </li>
+                    <li class="dropdown">
+                        <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-bs-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="false" aria-expanded="false">
+                            <span class="ms-1 nav-user-name hidden-sm">@User.Identity.Name</span>
+                            <img src="~/images/users/user-5.jpg" alt="profile-user" class="rounded-circle thumb-xs" />
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" asp-action="Profile" asp-controller="Home"><i data-feather="user" class="align-self-center icon-xs icon-dual me-1"></i> @Localizer["Profile"]</a>
+                            <a class="dropdown-item" asp-action="Settings" asp-controller="Home"><i data-feather="settings" class="align-self-center icon-xs icon-dual me-1"></i> @Localizer["Settings"]</a>
+                            <div class="dropdown-divider mb-0"></div>
+                            <a class="dropdown-item" asp-action="Logout" asp-controller="Authentication"><i data-feather="power" class="align-self-center icon-xs icon-dual me-1"></i> @Localizer["Logout"]</a>
+                        </div>
+                    </li>
+                </ul><!--end topbar-nav-->
+
+                <ul class="list-unstyled topbar-nav mb-0">
+                    <li>
+                        <button class="nav-link button-menu-mobile">
+                            <i data-feather="menu" class="align-self-center topbar-icon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            <!-- end navbar-->
+        </div>
+        <!-- Top Bar End -->
+        <div class="page-content">
+            <!-- Page Content-->
+            @RenderBody()
+
+            <partial name="_Footer"></partial>
+        </div>
+        <!-- end page content -->
+    </div>
+    <!-- end page-wrapper -->
+    <!-- jQuery  -->
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/metismenu.min.js"></script>
+    <script src="~/js/waves.js"></script>
+    <script src="~/js/feather.min.js"></script>
+    <script src="~/js/simplebar.min.js"></script>
+    <script src="~/js/moment.js"></script>
+    <script src="~/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+
+    <script src="~/lib/datatables/dataTables.bootstrap5.min.js"></script>
+    <script src="~/lib/datatables/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables/buttons.bootstrap5.min.js"></script>
+    <script src="~/lib/datatables/jszip.min.js"></script>
+    <script src="~/lib/datatables/pdfmake.min.js"></script>
+    <script src="~/lib/datatables/vfs_fonts.js"></script>
+    <script src="~/lib/datatables/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables/buttons.print.min.js"></script>
+    <script src="~/lib/datatables/buttons.colVis.min.js"></script>
+    <script src="~/lib/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables/responsive.bootstrap4.min.js"></script>
+    <script src="~/js/pages/jquery.datatable.init.js"></script>
+    <script src="~/js/refreshtoken.js"></script>
+    <script src="~/js/customSelect2.js"></script>
+    <script src="~/lib/select2/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+    @RenderSection("scripts", false)
+    <!-- App js -->
+    <script src="~/js/app.js"></script>
+
+</body>
+</html>

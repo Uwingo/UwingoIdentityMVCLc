@@ -1,0 +1,45 @@
+﻿﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+<link href="~/assets/css/flag.css" rel="stylesheet" />
+@inject IViewLocalizer localizer
+@inject IOptions<RequestLocalizationOptions> options
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultures = options.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
+        .ToList();
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+
+    var currentLanguage = requestCulture.RequestCulture.UICulture.Name switch
+    {
+        "tr-TR" => "TR",
+        "en-US" => "EN",
+        "kr-KR" => "KR",
+        _ => "TR"
+    };
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        @currentLanguage
+    </a>
+    <div class="dropdown-menu" aria-labelledby="languageDropdown">
+        <a class="dropdown-item" href="@Url.Action("SetLanguage", "Home", new { culture = "tr-TR", returnUrl = returnUrl })">Türkçe</a>
+        <a class="dropdown-item" href="@Url.Action("SetLanguage", "Home", new { culture = "en-US", returnUrl = returnUrl })">English</a>
+        <a class="dropdown-item" href="@Url.Action("SetLanguage", "Home", new { culture = "kr-KR", returnUrl = returnUrl })">Kurdî</a>
+    </div>
+</li>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdown = document.getElementById('languageDropdown');
+        dropdown.addEventListener('click', function () {
+            var menu = dropdown.nextElementSibling;
+            menu.classList.toggle('show');
+        });
+    });
+</script>

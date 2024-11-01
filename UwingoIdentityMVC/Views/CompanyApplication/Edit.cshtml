@@ -1,0 +1,94 @@
+﻿@model Tuple<CompanyApplicationDto, List<CompanyDto>, List<ApplicationDto>>
+
+@{
+    ViewBag.Title = Localizer["EditCompanyApplicationAssignment"];
+}
+
+<h2>@Localizer["EditCompanyApplicationAssignment"]</h2>
+
+<div class="form-group">
+    <label for="CompanyId">@Localizer["SelectCompany"]</label>
+    <select class="form-control" name="CompanyId" id="CompanyId">
+        @foreach (var item in Model.Item2)
+        {
+            if (item.Id == Model.Item1.CompanyId)
+            {
+                <option selected value="@item.Id">@item.Name</option>
+            }
+            else
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label for="ApplicationId">@Localizer["SelectApplication"]</label>
+    <select class="form-control" name="ApplicationId" id="ApplicationId">
+        @foreach (var item in Model.Item3)
+        {
+            if (item.Id == Model.Item1.ApplicationId)
+            {
+                <option selected value="@item.Id">@item.Name</option>
+            }
+            else
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label for="DbConnection">@Localizer["DbConnection"]</label>
+    <input type="text" class="form-control" id="DbConnection" name="DbConnection" value="@Model.Item1.DbConnection" required />
+</div>
+<button type="button" name="button" id="button" class="btn btn-primary" onclick="submitEditForm()">@Localizer["Update"]</button>
+<a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
+
+@section Scripts {
+    <script>
+        function submitEditForm() {
+            Swal.fire({
+                title: '@Localizer["AreYouSure"]',
+                text: "@Localizer["YouAreAboutToUpdateThisAssignment"]",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["YesUpdateIt"]',
+                cancelButtonText: '@Localizer["NoCancel"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    // Submit the form via AJAX
+                    var companyApplication = {
+                        Id: '@Model.Item1.Id',
+                        CompanyId: $('#CompanyId').val(),
+                        ApplicationId: $('#ApplicationId').val()
+                    };
+
+                    $.ajax({
+                        url: '@Url.Action("Edit", "CompanyApplication")',
+                        type: 'POST',
+                        data: JSON.stringify(companyApplication),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Updated"]',
+                                '@Localizer["TheAssignmentHasBeenUpdatedSuccessfully"]',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '@Url.Action("Index", "CompanyApplication")';
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Error"]',
+                                '@Localizer["ThereWasAnErrorUpdatingTheAssignment"]',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

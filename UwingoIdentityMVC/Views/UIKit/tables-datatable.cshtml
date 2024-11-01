@@ -1,0 +1,277 @@
+@section styles{
+        <!-- DataTables -->
+        <link href="~/lib/datatables/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/lib/datatables/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+        <!-- Responsive datatable examples -->
+        <link href="~/lib/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" /> 
+}
+
+<div class="container-fluid">
+                    <!-- Page-Title -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="page-title-box">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4 class="page-title">Datatables</h4>
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="javascript:void(0);">Dastone</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript:void(0);">Tables</a></li>
+                                            <li class="breadcrumb-item active">Datatables</li>
+                                        </ol>
+                                    </div><!--end col-->
+                                    <div class="col-auto align-self-center">
+                                        <a href="#" class="btn btn-sm btn-outline-primary" id="Dash_Date">
+                                            <span class="day-name" id="Day_Name">Today:</span>&nbsp;
+                                            <span class="" id="Select_date">Jan 11</span>
+                                            <i data-feather="calendar" class="align-self-center icon-xs ms-1"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="download" class="align-self-center icon-xs"></i>
+                                        </a>
+                                    </div><!--end col-->  
+                                </div><!--end row-->                                                              
+                            </div><!--end page-title-box-->
+                        </div><!--end col-->
+                    </div><!--end row-->
+                    <!-- end page title end breadcrumb -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Default Datatable</h4>
+                                    <p class="text-muted mb-0">DataTables has most features enabled by
+                                        default, so all you need to do to use it with your own tables is to call
+                                        the construction function: <code>$().DataTable();</code>.
+                                    </p>
+                                </div><!--end card-header-->
+                                <div class="card-body">
+                                    <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Position</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var app in ViewBag.ApplicationList)
+                                            {
+                                                <tr>
+                                                    <td>@app.Name</td>
+                                                    <td>@app.DbConnection</td>
+                                                    
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Row Border Bottom Example</h4>
+                                    <p class="text-muted mb-0">DataTables has most features enabled by default, 
+                                        so all you need to do to use it with your own ables is to call the
+                                         construction function: <code>$().DataTable();</code> and border bottom.
+                                    </p>
+                                </div><!--end card-header-->
+                                <div class="card-body table-responsive">
+                                    <div class="">
+                                        <table id="datatable2" class="table dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Position</th>
+                                                    <th>Office</th>
+                                                    <th>Age</th>
+                                                    <th>Start date</th>
+                                                    <th>Salary</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var app in ViewBag.ApplicationList)
+                                                {
+                                                    <tr>
+                                                        <td>@app.Name</td>
+                                                        <td>@app.DbConnection</td>
+                                                        <td>@app.Name</td>
+                                                        <td>@app.Name</td>
+                                                        <td>2011/01/25</td>
+                                                        <td>$112,000</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>           
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end row-->
+    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Buttons example</h4>
+                                    <p class="text-muted mb-0">The Buttons extension for DataTables
+                                        provides a common set of options, API methods and styling to display
+                                        buttons on a page that will interact with a DataTable. The core library
+                                        provides the based framework upon which plug-ins can built.
+                                    </p>
+                                </div><!--end card-header-->
+                                <div class="card-body">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Office</th>
+                                <th>Age</th>
+                                <th>Start date</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in ViewBag.ApplicationList)
+                            {
+                                <tr>
+                                    <td>@app.Name</td>
+                                    <td>@app.DbConnection</td>
+                                    <td>@app.Name</td>
+                                    <td>@app.Name</td>
+                                    <td>2011/01/25</td>
+                                    <td>$112,000</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Row created callback example</h4>
+                                    <p class="text-muted mb-0">The Buttons extension for DataTables
+                                        provides a common set of options, API methods and styling to display
+                                        buttons on a page that will interact with a DataTable. The core library
+                                        provides the based framework upon which plug-ins can built.
+                                    </p>
+                                </div><!--end card-header-->
+                                <div class="card-body">
+                    <table id="row_callback" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Office</th>
+                                <th>Age</th>
+                                <th>Start date</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in ViewBag.ApplicationList)
+                            {
+                                <tr>
+                                    <td>@app.Name</td>
+                                    <td>@app.DbConnection</td>
+                                    <td>@app.Name</td>
+                                    <td>@app.Name</td>
+                                    <td>2011/01/25</td>
+                                    <td>$112,000</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                                    @*
+                                        <tr>
+                                            <td>Michael Bruce</td>
+                                            <td>Javascript Developer</td>
+                                            <td>Singapore</td>
+                                            <td>29</td>
+                                            <td>2011/06/27</td>
+                                            <td>$183,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Donna Snider</td>
+                                            <td>Customer Support</td>
+                                            <td>New York</td>
+                                            <td>27</td>
+                                            <td>2011/01/25</td>
+                                            <td>$112,000</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>         *@
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+    
+                                    <h4 class="mt-0 header-title">Child rows example</h4>
+                                    <p class="text-muted mb-3">The DataTables API has a number of methods for attaching 
+                                        child rows to a parent row in the DataTable. This can be used to show additional 
+                                        information about a row, useful for cases where you wish to convey more information 
+                                        about a row than there is space for in the host table.
+                                    </p>
+    
+                                    <table id="child_rows" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Name</th>
+                                                <th>Position</th>
+                                                <th>Office</th>
+                                                <th>Salary</th>
+                                            </tr>
+                                        </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Position</th>
+                                            <th>Office</th>
+                                            <th>Salary</th>
+                                        </tr>
+                                    </tbody>
+                                    </table>        
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+
+                </div><!-- container -->
+
+
+@section scripts{
+        <!-- Required datatable js -->
+        <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/dataTables.bootstrap5.min.js"></script>
+        <!-- Buttons examples -->
+        <script src="~/lib/datatables/dataTables.buttons.min.js"></script>
+        <script src="~/lib/datatables/buttons.bootstrap5.min.js"></script>
+        <script src="~/lib/datatables/jszip.min.js"></script>
+        <script src="~/lib/datatables/pdfmake.min.js"></script>
+        <script src="~/lib/datatables/vfs_fonts.js"></script>
+        <script src="~/lib/datatables/buttons.html5.min.js"></script>
+        <script src="~/lib/datatables/buttons.print.min.js"></script>
+        <script src="~/lib/datatables/buttons.colVis.min.js"></script>
+        <!-- Responsive examples -->
+        <script src="~/lib/datatables/dataTables.responsive.min.js"></script>
+        <script src="~/lib/datatables/responsive.bootstrap4.min.js"></script>
+        <script src="~/js/pages/jquery.datatable.init.js"></script>
+}

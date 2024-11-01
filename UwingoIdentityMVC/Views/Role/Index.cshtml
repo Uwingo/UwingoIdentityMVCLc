@@ -1,0 +1,322 @@
+﻿@model IEnumerable<RoleDto>
+
+@{
+    ViewBag.Title = "Roller";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">@Localizer["Roller"]</h4>
+                <p class="text-muted mb-0">
+                    @Localizer["Aktif Roller"]
+                </p>
+            </div>
+
+            <input type="hidden" id="companyId" value="@ViewBag.CompanyId" />
+            <input type="hidden" id="applicationId" value="@ViewBag.ApplicationId" />
+
+            @if (User.HasClaim(c => c.Type == "Role" && c.Value == "CreateRole"))
+            {
+                <div class="card-body">
+                    <div class="button-items">
+                        <a asp-action="Create" class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis">@Localizer["Yeni Rol Ekle"]</a>
+                    </div>
+                </div>
+            }
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="companySelect">@Localizer["Şirket Seç"]</label>
+                    <select id="companySelect" class="form-select select2">
+                        <option value="">@Localizer["Şirket Seçin"]</option>
+                        @if (ViewBag.Companies != null)
+                        {
+                            foreach (var company in ViewBag.Companies)
+                            {
+                                <option value="@company.Id">@company.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="applicationSelect">@Localizer["Uygulama Seç"]</label>
+                    <select id="applicationSelect" class="form-select select2" disabled>
+                        <option value="">@Localizer["Uygulama Seçin"]</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button id="filterRolesBtn" class="btn btn-primary">@Localizer["Göster"]</button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div id="rolesTableContainer">
+                    @* @await Html.PartialAsync("_rolesTablePartial", Model) *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="roleClaimsModal" tabindex="-1" role="dialog" aria-labelledby="roleClaimsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roleClaimsModalLabel">@Localizer["Rol Yetkilerini Düzenle"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="roleClaimsForm">
+                    <div id="roleClaimsList">
+                        <!-- Role yetkileri burada listelenecek -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Kapat"]</button>
+                @if (User.HasClaim(c => c.Type == "Role" && c.Value == "EditRoleClaims"))
+                {
+                    <button type="button" class="btn btn-primary" onclick="updateRoleClaims()">@Localizer["Kaydet"]</button>
+                }
+                @if (User.HasClaim(c => c.Type == "Role" && c.Value == "GetRoleClaims") && !User.HasClaim(c => c.Type == "Role" && c.Value == "EditRoleClaims"))
+                {
+                    <button type="button" disabled class="btn btn-primary">@Localizer["Kaydet"]</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Select2 kutuları
+            $('#companySelect').select2({
+                placeholder: "Şirket Seçin",
+                allowClear: true
+            });
+            $('#applicationSelect').select2({
+                placeholder: "Uygulama Seçin",
+                allowClear: true
+            });
+
+            // Şirket seçildiğinde ilgili uygulamaları getir
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+
+                // Uygulama kutusunu temizleyin ve seçilebilir hale getirin
+                $('#applicationSelect').empty().append('<option value="">Uygulama Seçin</option>').trigger('change');
+                $('#applicationSelect').prop('disabled', !companyId); // Şirket seçilmezse uygulama kutusunu devre dışı bırak
+
+                if (companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetApplicationsByCompany", "User")', // Uygulama yükleme endpoint'i
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            if (data && data.length > 0) {
+                                $.each(data, function (index, application) {
+                                    var newOption = new Option(application.name, application.id, false, false);
+                                    $('#applicationSelect').append(newOption).trigger('change');
+                                });
+                            } else {
+                                $('#applicationSelect').append('<option value="">Uygulama bulunamadı</option>').trigger('change');
+                            }
+                        },
+                        error: function () {
+                            alert('Uygulamalar getirilirken bir hata oluştu.');
+                        }
+                    });
+                }
+            });
+        });
+
+        function deleteRole(id) {
+            Swal.fire({
+                title: '@Localizer["Emin misiniz?"]',
+                text: "@Localizer["Bu kaydı silmek istediğinizden emin misiniz?"]",
+                icon: '@Localizer["warning"]',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["Evet, Sil!"]',
+                cancelButtonText: '@Localizer["Hayır, İptal Et"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Role")/' + id,
+                        type: 'POST',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Silindi!"]',
+                                '@Localizer["Kayıt başarıyla silindi."]',
+                                '@Localizer["success"]'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Hata!"]',
+                                '@Localizer["Silme işlemi sırasında bir hata oluştu."]',
+                                '@Localizer["error"]'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        let currentRoleId = null; // Global variable to store current roleId
+
+        function openRoleClaimsModal(roleId) {
+            var companyId = $('#companySelect').val();  // Şirket ID'si
+            var applicationId = $('#applicationSelect').val();  // Uygulama ID'si
+
+            if (!companyId || !applicationId) {
+                alert('@Localizer["Lütfen şirket ve uygulama seçiniz."]');
+                return;
+            }
+
+            currentRoleId = roleId; // Set the current roleId
+            $.ajax({
+                url: '@Url.Action("GetRoleClaims", "Role")' + '?roleId=' + roleId + '&companyId=' + companyId + '&applicationId=' + applicationId,
+                type: 'GET',
+                success: function (response) {
+                    $('#roleClaimsList').html(response);
+                    $('#roleClaimsModal').modal('show');
+                },
+                error: function () {
+                    Swal.fire(
+                        '@Localizer["Hata!"]',
+                        '@Localizer["Yetkiler alınırken bir hata oluştu."]',
+                        '@Localizer["error"]'
+                    );
+                }
+            });
+        }
+
+        function updateRoleClaims() {
+            var form = $('#roleClaimsForm');
+            var formDataArray = form.serializeArray();
+            var claims = [];
+
+            // Parse form data into claims array
+            formDataArray.forEach(function (item) {
+                if (item.name.startsWith("claimValue")) {
+                    // Find the corresponding claim type using the claim value
+                    var claimValue = item.value;
+                    var claimTypeInput = form.find(`input[name='claimType_${claimValue}']`).val();
+
+                    claims.push({
+                        Type: claimTypeInput, // Set the correct ClaimType
+                        Value: claimValue // The ClaimValue from the checkbox
+                    });
+                }
+            });
+
+            // Ensure currentRoleId is being used here
+            $.ajax({
+                url: '@Url.Action("UpdateRoleClaims", "Role")', // Frontend controller endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ roleId: currentRoleId, claims: claims }), // Use currentRoleId and claims
+                success: function (response) {
+                    Swal.fire(
+                        '@Localizer["Güncellendi!"]',
+                        response,
+                        '@Localizer["success"]'
+                    ).then(() => {
+                        $('#roleClaimsModal').modal('hide');
+                    });
+                },
+                error: function (xhr) {
+                    let errorMessage = '@Localizer["Yetkiler güncellenirken bir hata oluştu."]';
+                    if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
+                    }
+                    Swal.fire(
+                        '@Localizer["Hata!"]',
+                        errorMessage,
+                        '@Localizer["error"]'
+                    );
+                }
+            });
+        }
+
+        // Kullanıcılar göster butonuna tıklama olayı
+        $('#filterRolesBtn').on('click', function () {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageSize = 10; // Varsayılan sayfa boyutu
+
+            if (companyId && applicationId) {
+                loadRoles(companyId, applicationId, 1, pageSize); // Varsayılan olarak 1. sayfa ve 10 kayıt göster
+            } else {
+                alert('@Localizer["Lütfen hem şirket hem de uygulama seçiniz."]');
+            }
+        });
+
+        function editRole(id) {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+
+            if (!companyId || !applicationId) {
+                alert('@Localizer["Lütfen şirket ve uygulama seçiniz."]');
+                return;
+            }
+
+            window.location.href = '@Url.Action("Edit", "Role")' + '?id=' + id + '&companyId=' + companyId + '&applicationId=' + applicationId;
+        }
+
+        // Sayfa boyutunu güncelleyen fonksiyon
+        function updatePageSize(pageSize) {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageNumber = 1; // Sayfa boyutunu değiştirdiğimizde 1. sayfaya döneceğiz
+
+            if (companyId && applicationId) {
+                loadRoles(companyId, applicationId, pageNumber, pageSize);
+            }
+        }
+
+        // Dinamik olarak kullanıcıları yükleyen fonksiyon
+        const loadRoles = (companyId, applicationId, pageNumber, pageSize) => {
+            $.ajax({
+                url: '/Role/GetRolesByCompanyAndApplication',
+                type: 'POST',
+                data: {
+                    companyId: companyId,
+                    applicationId: applicationId,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                },
+                success: (response) => {
+                    $('#rolesTableContainer').html(response);
+                },
+                error: () => {
+                    alert("@Localizer["Veriler yüklenemedi."]");
+                }
+            });
+        };
+
+        // Sayfa numarası butonlarına tıklama olayı
+        $('body').on('click', '.page-link', function () {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageNumber = $(this).data('pagenumber');
+            var pageSize = $('#pageSizeSelect').val();
+
+            loadRoles(companyId, applicationId, pageNumber, pageSize);
+        });
+
+        // Sayfa boyutu değiştiğinde olay
+        $('body').on('change', '#pageSizeSelect', function () {
+            var pageSize = $(this).val();
+            updatePageSize(pageSize);
+        });
+    </script>
+}

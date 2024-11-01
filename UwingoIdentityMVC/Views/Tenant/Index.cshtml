@@ -1,0 +1,178 @@
+﻿@model IEnumerable<TenantDto>
+
+@{
+    ViewBag.Title = "Kiracılar";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">@Localizer["Companies"]</h4>
+                <p class="text-muted mb-0">
+                    @Localizer["ActiveCompanies"]
+                </p>
+            </div>
+            @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "CreateTenant"))
+            {
+                <div class="card-body">
+                    <div class="button-items">
+                        <a asp-action="Create" class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis">@Localizer["AddCompany"]</a>
+                    </div>
+                </div>
+            }
+
+            <div class="card-body">
+                <div id="datatable-buttons_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="datatable-buttons_length">
+                                <label>
+                                    @Localizer["Show"]
+                                    <select name="datatable-buttons_length" aria-controls="datatable-buttons" class="form-select form-select-sm" onchange="updatePageSize(this.value)">
+
+                                        @if (ViewBag.PageSize == 10)
+                                        {
+                                            <option selected value="10">10</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="10">10</option>
+                                        }
+
+                                        @if (ViewBag.TotalRecords >= 20)
+                                        {
+                                            @if (ViewBag.PageSize == 20)
+                                            {
+                                                <option selected value="20">20</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="20">20</option>
+                                            }
+                                        }
+                                        @if (ViewBag.TotalRecords >= 50)
+                                        {
+                                            @if (ViewBag.PageSize == 50)
+                                            {
+                                                <option selected value="50">50</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="50">50</option>
+                                            }
+                                        }
+                                        @if (ViewBag.TotalRecords >= 100)
+                                        {
+                                            @if (ViewBag.PageSize == 100)
+                                            {
+                                                <option selected value="100">100</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="100">100</option>
+                                            }
+                                        }
+                                    </select> @Localizer["Entries"]
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer["Name"]</th>
+                                        @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "EditTenant") ||
+                                        User.HasClaim(c => c.Type == "Tenant" && c.Value == "DeleteTenant"))
+                                        {
+                                            <th style="text-align:center">@Localizer["Operations"]</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var tenant in Model)
+                                    {
+                                        <tr>
+                                            <td>@tenant.Name</td>
+                                            @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "EditTenant") ||
+                                           User.HasClaim(c => c.Type == "Tenant" && c.Value == "DeleteTenant"))
+                                            {
+                                                <td style="text-align:center">
+                                                    @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "EditTenant"))
+                                                    {
+                                                        <a href="@Url.Action("Edit", "Tenant", new { id = tenant.Id })" class="las la-pen text-secondary font-16"></a>
+                                                    }
+                                                    @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "DeleteTenant"))
+                                                    {
+                                                        <a href="javascript:void(0);" class="las la-trash-alt text-secondary font-16" onclick="deleteTenant('@tenant.Id')"></a>
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="dataTables_info" id="datatable-buttons_info" role="status" aria-live="polite">
+                                @Localizer["Showing"] @ViewBag.PageNumber to @ViewBag.PageSize @Localizer["Entries"] of @ViewBag.TotalRecords entries
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="datatable-buttons_paginate">
+                                <ul class="pagination">
+                                    @for (int i = 1; i <= Math.Ceiling((double)ViewBag.TotalRecords / ViewBag.PageSize); i++)
+                                    {
+                                        <li class="paginate_button page-item @(ViewBag.PageNumber == i ? "active" : "")">
+                                            <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize">@i</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteTenant(id) {
+            Swal.fire({
+                title: '@Localizer["AreYouSure"]',
+                text: "@Localizer["DeleteConfirmation"]",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["YesDelete"]',
+                cancelButtonText: '@Localizer["NoCancel"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Tenant")/' + id,
+                        type: 'POST',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Deleted"]',
+                                '@Localizer["DeletedMessage"]',
+                                'success'
+                            );
+                            // Reload the page or update the table
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Error"]',
+                                '@Localizer["ErrorMessage"]',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            })
+        }
+    </script>
+}

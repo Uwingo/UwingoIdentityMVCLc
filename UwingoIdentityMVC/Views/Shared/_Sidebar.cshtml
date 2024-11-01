@@ -1,0 +1,149 @@
+﻿<div class="left-sidenav">
+    <div class="brand">
+        <a asp-controller="home" asp-action="index" class="logo">
+            <span>
+                <img src="~/images/uwingoLogo.jpg" alt="logo-small" class="logo-sm">
+            </span>
+            @* <span>
+                <img src="~/images/logo-sm.png" alt="logo-small" class="logo-sm">
+            </span>
+            <span>
+                <img src="~/images/logo.png" alt="logo-large" class="logo-lg logo-light">
+                <img src="~/images/logo-dark.png" alt="logo-large" class="logo-lg logo-dark">
+            </span> *@
+        </a>
+    </div>
+    <div class="menu-content h-100" data-simplebar>
+        <ul class="metismenu left-sidenav-menu">
+            <li class="menu-label mt-0">@Localizer["Management"]</li>
+
+            @if (User.HasClaim(c => c.Type == "Company" && c.Value == "GetAllCompanies") || User.HasClaim(c => c.Type == "Company" && c.Value == "CreateCompany"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="briefcase" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Companies"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "Company" && c.Value == "GetAllCompanies"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Companies"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "Company" && c.Value == "CreateCompany"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Company"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (User.HasClaim(c => c.Type == "Application" && c.Value == "GetAllApplications") || User.HasClaim(c => c.Type == "Application" && c.Value == "CreateApplication"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="grid" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Applications"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "Application" && c.Value == "GetAllApplications"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Applications"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "Application" && c.Value == "CreateApplication"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Application"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "GetAllCompanyApplications") || User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "CreateCompanyApplication"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="layers" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Company Applications"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "GetAllCompanyApplications"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Company Applications"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "CreateCompanyApplication"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Company Application"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (User.HasClaim(c => c.Type == "Role" && c.Value == "GetAllRoles") || User.HasClaim(c => c.Type == "Role" && c.Value == "CreateRole"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="users" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Roles"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "Role" && c.Value == "GetAllRoles"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Roles"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "Role" && c.Value == "CreateRole"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Role"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @* Kullanıcı Admin veya TenantAdmin rolündeyse bu menü öğesi görüntülenecek *@
+            @if (User.HasClaim(c => c.Type == "User" && c.Value == "GetAllUsers") || User.HasClaim(c => c.Type == "User" && c.Value == "CreateUser"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="user" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Users"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "User" && c.Value == "GetAllUsers"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Users"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "User" && c.Value == "CreateUser"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add User"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "GetAllTenants") || User.HasClaim(c => c.Type == "Tenant" && c.Value == "CreateTenant"))
+            {
+                <li>
+                    <a href="javascript: void(0);">
+                        <i data-feather="home" class="align-self-center menu-icon"></i>
+                        <span>@Localizer["Tenants"]</span>
+                        <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "GetAllTenants"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Tenants"]</a></li>
+                        }
+                        @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "CreateTenant"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Tenant"]</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+

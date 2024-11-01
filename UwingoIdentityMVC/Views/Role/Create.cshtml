@@ -1,0 +1,88 @@
+﻿@model Tuple<List<CompanyDto>, List<ApplicationDto>>
+
+@{
+    ViewBag.Title = Localizer["Create Role"];
+}
+
+<h2>@Localizer["Create Role"]</h2>
+
+<form id="createRoleForm" asp-action="Create">
+    <div class="form-group">
+        <label for="Name">@Localizer["Name"]</label>
+        <input type="text" class="form-control" id="Name" name="Name" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Description">@Localizer["Description"]</label>
+        <input type="text" class="form-control" id="Description" name="Description" required />
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group mb-2">
+            <label class="form-label" for="companySelect">@Localizer["Company"]</label>
+            <select class="form-select select2" name="CompanyId" id="companySelect" required data-placeholder="@Localizer["-- Please Select a Company --"]">
+                <option value=""></option>
+                @foreach (var company in Model.Item1)
+                {
+                    <option value="@company.Id">@company.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-2">
+            <label class="form-label" for="applicationSelect">@Localizer["User's Application"]</label>
+            <select class="form-select" name="ApplicationId" id="applicationSelect" required>
+                <option value="">@Localizer["-- Please Select an Application --"]</option>
+            </select>
+        </div>
+    }
+    <!-- Application Dropdown -->
+    @if (User.IsInRole("TenantAdmin") || User.IsInRole("User"))
+    {
+        <div class="form-group mb-2">
+            <label class="form-label" for="applicationSelect">@Localizer["User's Application"]</label>
+            <select class="form-select select2" name="ApplicationId" id="applicationSelect" required data-placeholder="@Localizer["-- Please Select an Application --"]">
+                <option value=""></option>
+                @foreach (var application in Model.Item2)
+                {
+                    <option value="@application.Id">@application.Name</option>
+                }
+            </select>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary">@Localizer["Create"]</button>
+    <a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Company selected, fetch related applications
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+                if (companyId) {
+                    // Dynamically create the URL in JavaScript
+                    $.ajax({
+                        url: '@Url.Action("GetApplicationsByCompany")', // Dynamic URL usage
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            console.log(data); // Log the response data
+                            $('#applicationSelect').empty();
+                            $('#applicationSelect').append('<option value="">@Localizer["-- Please Select an Application --"]</option>'); // Add empty option
+                            $.each(data, function (index, application) {
+                                $('#applicationSelect').append(new Option(application.name, application.id));
+                            });
+                        },
+                        error: function () {
+                            alert('@Localizer["An error occurred while fetching applications."]');
+                        }
+                    });
+                } else {
+                    $('#applicationSelect').empty(); // Clear dropdown if no company selected
+                    $('#applicationSelect').append('<option value="">@Localizer["-- Please Select an Application --"]</option>'); // Add empty option
+                }
+            });
+        });
+    </script>
+}

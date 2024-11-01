@@ -1,0 +1,178 @@
+﻿@model Tuple<List<CompanyDto>, List<ApplicationDto>>
+@{
+    Layout = string.Empty;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Uwingo - Identity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/images/uwingoIco.ico">
+
+    <!-- App css -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+</head>
+
+<body class="account-body accountbg">
+    <div class="container">
+        <div class="row vh-100 d-flex justify-content-center">
+            <div class="col-12 align-self-center">
+                <div class="row">
+                    <div class="col-lg-5 mx-auto">
+                        <div class="card">
+                            <div class="card-body p-0 auth-header-box">
+                                <div class="text-center p-3">
+                                    <a href="index.html" class="logo logo-admin">
+                                        <img src="~/images/uwingoLogo.jpg" height="50" alt="logo" class="auth-logo">
+                                    </a>
+                                    <h4 class="mt-3 mb-1 fw-semibold text-white font-18">@Localizer["LetsGetStarted"] Uwingo</h4>
+                                    <p class="text-muted mb-0">@Localizer["SignInToContinue"]</p>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="nav-border nav nav-pills" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active fw-semibold" data-bs-toggle="tab" href="#LogIn_Tab"
+                                           role="tab">@Localizer["LogIn"]</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active p-3" id="LogIn_Tab" role="tabpanel">
+                                        <form class="form-horizontal auth-form" method="post"
+                                              action="/Authentication/Login">
+
+                                            @if (!ViewData.ModelState.IsValid)
+                                            {
+                                                <div class="alert alert-danger">
+                                                    @Html.ValidationSummary()
+                                                </div>
+                                            }
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="username">@Localizer["Username"]</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="username"
+                                                           id="username" placeholder="@Localizer["Enter Username"]">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="password">@Localizer["Password"]</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" name="password"
+                                                           id="password" placeholder="@Localizer["Enter Password"]">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="companySelect">@Localizer["Company"]</label>
+                                                <select class="form-select select2" name="CompanyId" id="companySelect" required data-placeholder="-- @Localizer["PleaseSelectCompany"] --">
+                                                    <option value="">-- @Localizer["PleaseSelectCompany"] --</option>
+                                                    @foreach (var company in Model.Item1)
+                                                    {
+                                                        <option value="@company.Id">@company.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="applicationSelect">@Localizer["UsersApplication"]</label>
+                                                <select class="form-select select2" name="ApplicationId" id="applicationSelect" required>
+                                                    <option value="">-- @Localizer["PleaseSelectApplication"] --</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group row my-3">
+                                                <div class="col-sm-6">
+                                                    <div class="custom-control custom-switch switch-success">
+                                                        <input type="checkbox" class="custom-control-input"
+                                                               id="customSwitchSuccess">
+                                                        <label class="form-label text-muted"
+                                                               for="customSwitchSuccess">@Localizer["RememberMe"]</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 text-end">
+                                                    <a href="/Authentication/ForgotPassword"
+                                                       class="text-muted font-13">
+                                                        <i class="dripicons-lock"></i> @Localizer["ForgotPassword"]?
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-0 row">
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary w-100 waves-effect waves-light"
+                                                            type="submit">
+                                                        @Localizer["LogIn"] <i class="fas fa-sign-in-alt ms-1"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body bg-light-alt text-center">
+                                <span class="text-muted d-none d-sm-inline-block">
+                                    Uwingo ©
+                                    <script>
+                                        document.write(new Date().getFullYear())
+                                    </script>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/waves.js"></script>
+    <script src="~/js/feather.min.js"></script>
+    <script src="~/js/simplebar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+
+                $('#applicationSelect').empty().append('<option value="">-- @Localizer["PleaseSelectApplication"] --</option>');
+
+                if (companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetApplicationsByCompany", "User")',
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            if (data && data.length > 0) {
+                                $.each(data, function (index, application) {
+                                    $('#applicationSelect').append(new Option(application.name, application.id));
+                                });
+                            } else {
+                                $('#applicationSelect').append('<option value="">@Localizer["NoApplicationsFound"]</option>');
+                            }
+                        },
+                        error: function () {
+                            alert('@Localizer["ErrorFetchingApplications"]');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

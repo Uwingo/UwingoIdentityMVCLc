@@ -1,0 +1,73 @@
+﻿@model CompanyDto
+
+@{
+    ViewBag.Title = Localizer["Şirket Düzenle"];
+}
+
+<h2>@Localizer["Şirket Düzenle"]</h2>
+
+    <div class="form-group">
+        <label for="Name">@Localizer["Ad"]</label>
+        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+    </div>
+    <div class="form-group">
+        <label for="Address">@Localizer["Adres"]</label>
+        <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" required />
+    </div>
+    <div>
+    <input type="text" class="form-control" id="TenantId" name="TenantId" value="@Model.TenantId" style="display:none" />
+    </div>
+    <button type="button" id="button" name="button" onclick="myFunc()" class="btn btn-primary">@Localizer["Güncelle"]</button>
+    <a asp-action="Index" class="btn btn-secondary">@Localizer["İptal"]</a>
+
+
+@section Scripts {
+    <script>
+        function myFunc() {
+            console.log("girdim");
+            Swal.fire({
+                title: '@Localizer["Emin misiniz?"]',
+                text: "@Localizer["Güncelleme işlemi yapmak üzeresiniz!"]",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["Evet, Güncelle!"]',
+                cancelButtonText: '@Localizer["Hayır, Güncellemeyi İptal Et"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    // Form verilerini hazırla
+                    var company = {
+                        Id: '@Model.Id',
+                        Name: $('#Name').val(),
+                        Address: $('#Address').val(),
+                        TenantId: $('#TenantId').val()
+                    };
+
+                    // AJAX isteği ile verileri gönder
+                    $.ajax({
+                        url: '@Url.Action("Edit", "Company")',
+                        type: 'POST',
+                        data: JSON.stringify(company),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Güncellendi!"]',
+                                '@Localizer["Güncelleme başarıyla tamamlandı."]',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '@Url.Action("Index", "Company")';
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Hata!"]',
+                                '@Localizer["Güncelleme sırasında bir hata oluştu."]',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

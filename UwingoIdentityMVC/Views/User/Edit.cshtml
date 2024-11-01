@@ -1,0 +1,162 @@
+﻿@model UserDto
+@{
+    ViewBag.Title = Localizer["Kullanıcı Düzenle"];
+}
+
+<h2>@Localizer["Kullanıcı Düzenle"]</h2>
+
+<div class="form-group">
+    <label for="UserName">@Localizer["Kullanıcı Adı"]</label>
+    <input type="text" class="form-control" id="UserName" name="UserName" value="@Model.UserName" required />
+</div>
+<div class="form-group">
+    <label for="FirstName">@Localizer["Ad"]</label>
+    <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
+</div>
+<div class="form-group">
+    <label for="LastName">@Localizer["Soyadı"]</label>
+    <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
+</div>
+<div class="form-group">
+    <label for="PhoneNumber">@Localizer["Telefon Numarası"]</label>
+    <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+</div>
+<div class="form-group">
+    <label for="Email">@Localizer["E-posta"]</label>
+    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+</div>
+<div>
+    <input type="text" class="form-control" id="CompanyApplicationId" name="CompanyApplicationId" value="@Model.CompanyApplicationId" style="display:none" />
+</div>
+
+<!-- Hidden inputs for companyId and applicationId -->
+<input type="hidden" id="CompanyId" value="@ViewBag.CompanyId" />
+<input type="hidden" id="ApplicationId" value="@ViewBag.ApplicationId" />
+
+<button type="button" name="button" onclick="myFunc()" id="update" class="btn btn-primary">@Localizer["Güncelle"]</button>
+<a asp-action="Index" class="btn btn-secondary">@Localizer["İptal"]</a>
+<button type="button" class="btn btn-info" onclick="openClaimsModal()">@Localizer["Yetkileri Düzenle"]</button>
+
+<!-- Yetkileri Düzenle Modalı -->
+<div id="claimsModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Yetkileri Düzenle"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="ClaimType">@Localizer["Yetki Tipi"]</label>
+                    <input type="text" class="form-control" id="ClaimType" name="ClaimType" required />
+                </div>
+                <div class="form-group">
+                    <label for="ClaimValue">@Localizer["Yetki Değeri"]</label>
+                    <input type="text" class="form-control" id="ClaimValue" name="ClaimValue" required />
+                </div>
+                <button type="button" class="btn btn-primary" onclick="saveClaims()">@Localizer["Kaydet"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const params = new URLSearchParams(window.location.search);
+            const companyId = params.get("companyId");
+            const applicationId = params.get("applicationId");
+
+            console.log("CompanyId:", companyId);
+            console.log("ApplicationId:", applicationId);
+        });
+
+        function myFunc() {
+            Swal.fire({
+                title: '@Localizer["Emin misiniz?"]',
+                text: "@Localizer["Güncelleme işlemi yapmak üzeresiniz!"]",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["Evet, Güncelle!"]',
+                cancelButtonText: '@Localizer["Hayır, Güncellemeyi İptal Et"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    var user = {
+                        Id: '@Model.Id',
+                        UserName: document.getElementById("UserName").value,
+                        FirstName: document.getElementById("FirstName").value,
+                        LastName: document.getElementById("LastName").value,
+                        PhoneNumber: document.getElementById("PhoneNumber").value,
+                        Email: document.getElementById("Email").value,
+                        CompanyApplicationId: document.getElementById("CompanyApplicationId").value
+                    };
+
+                    const params = new URLSearchParams(window.location.search);
+                    const companyId = params.get("companyId");
+                    const applicationId = params.get("applicationId");
+
+                    $.ajax({
+                        url: `@Url.Action("Edit", "User")?companyId=${companyId}&applicationId=${applicationId}`,
+                        type: 'POST',
+                        data: JSON.stringify(user),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Güncellendi!"]',
+                                '@Localizer["Güncelleme başarıyla tamamlandı."]',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '@Url.Action("Index", "User")';
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Hata!"]',
+                                '@Localizer["Güncelleme sırasında bir hata oluştu."]',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        function openClaimsModal() {
+            $('#claimsModal').modal('show');
+        }
+
+        function saveClaims() {
+            var claim = {
+                ClaimType: document.getElementById("ClaimType").value,
+                ClaimValue: document.getElementById("ClaimValue").value,
+                UserId: '@Model.Id'
+            };
+
+            $.ajax({
+                url: '@Url.Action("EditClaims", "User")',
+                type: 'POST',
+                data: JSON.stringify(claim),
+                contentType: 'application/json',
+                success: function (response) {
+                    Swal.fire(
+                        '@Localizer["Kaydedildi!"]',
+                        '@Localizer["Yetkiler başarıyla güncellendi."]',
+                        'success'
+                    ).then(() => {
+                        $('#claimsModal').modal('hide');
+                    });
+                },
+                error: function () {
+                    Swal.fire(
+                        '@Localizer["Hata!"]',
+                        '@Localizer["Yetkileri güncellerken bir hata oluştu."]',
+                        'error'
+                    );
+                }
+            });
+        }
+    </script>
+}

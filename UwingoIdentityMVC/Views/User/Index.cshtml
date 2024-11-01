@@ -1,0 +1,361 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcılar";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">@Localizer["Kullanıcılar"]</h4>
+                <p class="text-muted mb-0">
+                    @Localizer["Şirketlerimiz Bünyesindeki Tüm Kullanıcılar"]
+                </p>
+            </div>
+            <input type="hidden" id="companyId" value="@ViewBag.CompanyId" />
+            <input type="hidden" id="applicationId" value="@ViewBag.ApplicationId" />
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="companySelect">@Localizer["Şirket Seç"]</label>
+                    <select id="companySelect" class="form-control" @((User.IsInRole("TenantAdmin") || User.IsInRole("User")) ? "disabled" : "")>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <option value="">@Localizer["Şirket Seçin"]</option>
+                        }
+                        @if (ViewBag.Companies != null)
+                        {
+                            foreach (var company in ViewBag.Companies)
+                            {
+                                <option value="@company.Id">@company.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="applicationSelect">@Localizer["Uygulama Seç"]</label>
+                    <select id="applicationSelect" class="form-control" @(User.IsInRole("User") ? "disabled" : "")>
+                        @if (User.IsInRole("Admin") || User.IsInRole("TenantAdmin"))
+                        {
+                            <option value="">@Localizer["Uygulama Seçin"]</option>
+                        }
+                        @if (ViewBag.Applications != null)
+                        {
+                            foreach (var app in ViewBag.Applications)
+                            {
+                                <option value="@app.Id">@app.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button id="filterUsersBtn" class="btn btn-primary">@Localizer["Göster"]</button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div id="usersTableContainer">
+                    <!-- Kullanıcılar burada Ajax ile yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="claimsModal" tabindex="-1" role="dialog" aria-labelledby="claimsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="claimsModalLabel">@Localizer["Yetkileri Düzenle"]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="claimsForm">
+                    <div id="claimsList">
+                        <!-- Yetkiler burada listelenecek -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Kapat"]</button>
+                @if (User.HasClaim(c => c.Type == "User" && c.Value == "EditUserClaims"))
+                {
+                    <button type="button" class="btn btn-primary" onclick="updateClaims()">@Localizer["Kaydet"]</button>
+                }
+                @if (User.HasClaim(c => c.Type == "User" && c.Value == "GetUserClaims") && !User.HasClaim(c => c.Type == "User" && c.Value == "EditUserClaims"))
+                {
+                    <button type="button" disabled class="btn btn-primary" onclick="updateClaims()">@Localizer["Kaydet"]</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Kullanıcı bilgileri yüklendiğinde yetkilere göre işlemler
+            var hasGetAllCompanies = @Html.Raw(User.HasClaim(c => c.Type == "Company" && c.Value == "GetAllCompanies") ? "true" : "false");
+            var hasGetAllApplications = @Html.Raw(User.HasClaim(c => c.Type == "Application" && c.Value == "GetAllApplications") ? "true" : "false");
+            var hasGetAllUsers = @Html.Raw(User.HasClaim(c => c.Type == "User" && c.Value == "GetAllUsers") ? "true" : "false");
+
+            // Kullanıcı yetkilerine göre seçim alanlarını kontrol et
+            if (hasGetAllCompanies) {
+                $('#companySelect').prop('disabled', false);
+                $('#applicationSelect').prop('disabled', false);
+            } else if (hasGetAllApplications || User.IsInRole("TenantAdmin")) {
+                $('#companySelect').prop('disabled', false);
+                $('#applicationSelect').prop('disabled', false);
+            } else if (hasGetAllUsers) {
+                $('#companySelect').prop('disabled', true);
+                $('#applicationSelect').prop('disabled', true);
+            }
+
+            // Kullanıcılar göster butonuna tıklama olayı
+            $('#filterUsersBtn').on('click', function () {
+                var companyId = $('#companySelect').val();
+                var applicationId = $('#applicationSelect').val();
+                var pageSize = 10; // Varsayılan sayfa boyutu
+
+                if (companyId && applicationId) {
+                    loadUsers(companyId, applicationId, 1, pageSize); // Varsayılan olarak 1. sayfa ve 10 kayıt göster
+                } else {
+                    alert('Lütfen hem şirket hem de uygulama seçiniz.');
+                }
+            });
+
+
+            //Select2Boxlar
+            $('#companySelect').select2({
+                placeholder: "Şirket Seçin",
+                allowClear: true
+            });
+
+            $('#applicationSelect').select2({
+                placeholder: "Uygulama Seçin",
+                allowClear: true
+            });
+
+            // Şirket seçildiğinde ilgili uygulamaları getir
+            $('#companySelect').change(function () {
+                var companyId = $(this).val();
+
+                // Önce mevcut uygulama seçeneklerini temizleyip varsayılan seçenek ekleyin
+                $('#applicationSelect').empty().append('<option value="">Uygulama Seçin</option>').trigger('change');
+
+                if (companyId) {
+                    $.ajax({
+                        url: '@Url.Action("GetApplicationsByCompany", "User")', // UserController'daki endpoint
+                        type: 'GET',
+                        data: { companyId: companyId },
+                        success: function (data) {
+                            if (data && data.length > 0) {
+                                // Eğer uygulamalar varsa dropdown’a ekleyin
+                                $.each(data, function (index, application) {
+                                    var newOption = new Option(application.name, application.id, false, false);
+                                    $('#applicationSelect').append(newOption).trigger('change');
+                                });
+                            } else {
+                                // Eğer uygulama yoksa bilgilendirici bir seçenek ekleyin
+                                $('#applicationSelect').append('<option value="">Uygulama bulunamadı</option>').trigger('change');
+                            }
+                        },
+                        error: function () {
+                            alert('Uygulamalar getirilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                        }
+                    });
+                }
+            });
+
+        });
+        // Kullanıcılar göster butonuna tıklama olayı
+        $('#filterUsersBtn').on('click', function () {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageSize = 10; // Varsayılan sayfa boyutu
+
+            if (companyId && applicationId) {
+                loadUsers(companyId, applicationId, 1, pageSize); // Varsayılan olarak 1. sayfa ve 10 kayıt göster
+            } else {
+                alert('Lütfen hem şirket hem de uygulama seçiniz.');
+            }
+        });
+
+        function editUser(id) {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+
+            if (!companyId || !applicationId) {
+                alert('Lütfen şirket ve uygulama seçiniz.');
+                return;
+            }
+
+            window.location.href = '@Url.Action("Edit", "User")' + '?id=' + id + '&companyId=' + companyId + '&applicationId=' + applicationId;
+        }
+
+        // Sayfa boyutunu güncelleyen fonksiyon
+        function updatePageSize(pageSize) {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageNumber = 1; // Sayfa boyutunu değiştirdiğimizde 1. sayfaya döneceğiz
+
+            if (companyId && applicationId) {
+                loadUsers(companyId, applicationId, pageNumber, pageSize);
+            }
+        }
+
+        // Dinamik olarak kullanıcıları yükleyen fonksiyon
+        const loadUsers = (companyId, applicationId, pageNumber, pageSize) => {
+            $.ajax({
+                url: '/User/GetUsersByCompanyAndApplication',
+                type: 'POST',
+                data: {
+                    companyId: companyId,
+                    applicationId: applicationId,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                },
+                success: (response) => {
+                    $('#usersTableContainer').html(response);
+                },
+                error: () => {
+                    alert("Veriler yüklenemedi.");
+                }
+            });
+        };
+
+        // Sayfa numarası butonlarına tıklama olayı
+        $('body').on('click', '.page-link', function () {
+            var companyId = $('#companySelect').val();
+            var applicationId = $('#applicationSelect').val();
+            var pageNumber = $(this).data('pagenumber');
+            var pageSize = $('#pageSizeSelect').val();
+
+            loadUsers(companyId, applicationId, pageNumber, pageSize);
+        });
+
+        // Sayfa boyutu değiştiğinde olay
+        $('body').on('change', '#pageSizeSelect', function () {
+            var pageSize = $(this).val();
+            updatePageSize(pageSize);
+        });
+
+        let currentUserId = null; // Global variable to store current userId
+
+        function deleteUser(id) {
+            Swal.fire({
+                title: '@Localizer["Emin misiniz?"]',
+                text: "@Localizer["Bu kaydı silmek istediğinizden emin misiniz?"]",
+                icon: '@Localizer["warning"]',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["Evet, Sil!"]',
+                cancelButtonText: '@Localizer["Hayır, İptal Et"]',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "User")/' + id,
+                        type: 'POST',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Silindi!"]',
+                                '@Localizer["Kayıt başarıyla silindi."]',
+                                '@Localizer["success"]'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Hata!"]',
+                                '@Localizer["Silme işlemi sırasında bir hata oluştu."]',
+                                '@Localizer["error"]'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        function openClaimsModal(userId) {
+            var companyId = $('#companySelect').val();  // Şirket ID'si
+            var applicationId = $('#applicationSelect').val();  // Uygulama ID'si
+
+            if (!companyId || !applicationId) {
+                alert('Lütfen şirket ve uygulama seçiniz.');
+                return;
+            }
+
+            currentUserId = userId; // Set the current userId
+
+            $.ajax({
+                url: '@Url.Action("GetUserClaims", "User")' + '?userId=' + userId + '&companyId=' + companyId + '&applicationId=' + applicationId,
+                type: 'GET',
+                success: function (response) {
+                    $('#claimsList').html(response);
+                    $('#claimsModal').modal('show');
+                },
+                error: function () {
+                    Swal.fire(
+                        '@Localizer["Hata!"]',
+                        '@Localizer["Yetkiler alınırken bir hata oluştu."]',
+                        '@Localizer["error"]'
+                    );
+                }
+            });
+        }
+
+
+        function updateClaims() {
+            var form = $('#claimsForm');
+            var formDataArray = form.serializeArray();
+            var claims = [];
+
+            // Parse form data into claims array
+            formDataArray.forEach(function (item) {
+                if (item.name.startsWith("claimValue")) {
+                    // Find the corresponding claim type using the claim value
+                    var claimValue = item.value;
+                    var claimTypeInput = form.find(`input[name='claimType_${claimValue}']`).val();
+
+                    claims.push({
+                        Type: claimTypeInput, // Set the correct ClaimType
+                        Value: claimValue // The ClaimValue from the checkbox
+                    });
+                }
+            });
+
+            // Ensure currentUserId is being used here
+            $.ajax({
+                url: '@Url.Action("UpdateUserClaims", "User")', // Frontend controller endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ userId: currentUserId, claims: claims }), // Use currentUserId and claims
+                success: function (response) {
+                    Swal.fire(
+                        '@Localizer["Güncellendi!"]',
+                        response,
+                        '@Localizer["success"]'
+                    ).then(() => {
+                        $('#claimsModal').modal('hide');
+                    });
+                },
+                error: function (xhr) {
+                    let errorMessage = '@Localizer["Yetkiler güncellenirken bir hata oluştu."]';
+                    if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
+                    }
+                    Swal.fire(
+                        '@Localizer["Hata!"]',
+                        errorMessage,
+                        '@Localizer["error"]'
+                    );
+                }
+            });
+        }
+    </script>
+}

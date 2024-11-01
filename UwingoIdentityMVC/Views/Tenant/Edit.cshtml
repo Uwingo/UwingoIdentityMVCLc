@@ -1,0 +1,64 @@
+﻿@model TenantDto
+@inject IViewLocalizer Localizer
+
+@{
+    ViewBag.Title = Localizer["EditTenant"]; // "Kiracı Düzenle"
+}
+
+<h2>@Localizer["EditTenant"]</h2>
+
+<div class="form-group">
+    <label for="Name">@Localizer["Name"]</label>
+    <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+</div>
+<button type="button" id="button" name="button" onclick="myFunc()" class="btn btn-primary">@Localizer["Update"]</button>
+<a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
+
+@section Scripts {
+    <script>
+        function myFunc() {
+            console.log("girdim");
+            Swal.fire({
+                title: '@Localizer["AreYouSure"]', // "Emin misiniz?"
+                text: '@Localizer["UpdateConfirmation"]', // "Güncelleme işlemi yapmak üzeresiniz!"
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '@Localizer["YesUpdate"]', // "Evet, Güncelle!"
+                cancelButtonText: '@Localizer["NoCancel"]', // "Hayır, Güncellemeyi İptal Et"
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    // Form verilerini hazırla
+                    var tenant = {
+                        Id: '@Model.Id',
+                        Name: $('#Name').val(),
+                    };
+
+                    // AJAX isteği ile verileri gönder
+                    $.ajax({
+                        url: '@Url.Action("Edit", "Tenant")',
+                        type: 'POST',
+                        data: JSON.stringify(tenant),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            Swal.fire(
+                                '@Localizer["Updated"]', // "Güncellendi!"
+                                '@Localizer["UpdateSuccess"]', // "Güncelleme başarıyla tamamlandı."
+                                'success'
+                            ).then(() => {
+                                window.location.href = '@Url.Action("Index", "Tenant")';
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                '@Localizer["Error"]', // "Hata!"
+                                '@Localizer["UpdateError"]', // "Güncelleme sırasında bir hata oluştu."
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
