@@ -19,12 +19,12 @@
         function myFunc() {
             console.log("girdim");
             Swal.fire({
-                title: '@Localizer["AreYouSure"]', // "Emin misiniz?"
-                text: '@Localizer["UpdateConfirmation"]', // "Güncelleme işlemi yapmak üzeresiniz!"
+                title: 'AreYouSure', // "Emin misiniz?"
+                text: 'UpdateConfirmation', // "Güncelleme işlemi yapmak üzeresiniz!"
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["YesUpdate"]', // "Evet, Güncelle!"
-                cancelButtonText: '@Localizer["NoCancel"]', // "Hayır, Güncellemeyi İptal Et"
+                confirmButtonText: 'YesUpdate', // "Evet, Güncelle!"
+                cancelButtonText: 'NoCancel', // "Hayır, Güncellemeyi İptal Et"
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -42,8 +42,8 @@
                         contentType: 'application/json',
                         success: function (response) {
                             Swal.fire(
-                                '@Localizer["Updated"]', // "Güncellendi!"
-                                '@Localizer["UpdateSuccess"]', // "Güncelleme başarıyla tamamlandı."
+                                'Updated', // "Güncellendi!"
+                                'UpdateSuccess', // "Güncelleme başarıyla tamamlandı."
                                 'success'
                             ).then(() => {
                                 window.location.href = '@Url.Action("Index", "Tenant")';
@@ -51,8 +51,8 @@
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Error"]', // "Hata!"
-                                '@Localizer["UpdateError"]', // "Güncelleme sırasında bir hata oluştu."
+                                'Error', // "Hata!"
+                                'UpdateError', // "Güncelleme sırasında bir hata oluştu."
                                 'error'
                             );
                         }

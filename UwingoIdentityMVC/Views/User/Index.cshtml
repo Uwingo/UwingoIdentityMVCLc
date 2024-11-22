@@ -1,14 +1,14 @@
 ﻿@{
-    ViewData["Title"] = "Kullanıcılar";
+    ViewData["Title"] = "Users";
 }
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">@Localizer["Kullanıcılar"]</h4>
+                <h4 class="card-title">@Localizer["Users"]</h4>
                 <p class="text-muted mb-0">
-                    @Localizer["Şirketlerimiz Bünyesindeki Tüm Kullanıcılar"]
+                    @Localizer["AllUsersWithinOurCompanies"]
                 </p>
             </div>
             <input type="hidden" id="companyId" value="@ViewBag.CompanyId" />
@@ -16,11 +16,11 @@
 
             <div class="card-body">
                 <div class="form-group">
-                    <label for="companySelect">@Localizer["Şirket Seç"]</label>
+                    <label for="companySelect">@Localizer["SelectCompany"]</label>
                     <select id="companySelect" class="form-control" @((User.IsInRole("TenantAdmin") || User.IsInRole("User")) ? "disabled" : "")>
                         @if (User.IsInRole("Admin"))
                         {
-                            <option value="">@Localizer["Şirket Seçin"]</option>
+                            <option value="">@Localizer["SelectCompany"]</option>
                         }
                         @if (ViewBag.Companies != null)
                         {
@@ -32,11 +32,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="applicationSelect">@Localizer["Uygulama Seç"]</label>
+                    <label for="applicationSelect">@Localizer["SelectApplication"]</label>
                     <select id="applicationSelect" class="form-control" @(User.IsInRole("User") ? "disabled" : "")>
                         @if (User.IsInRole("Admin") || User.IsInRole("TenantAdmin"))
                         {
-                            <option value="">@Localizer["Uygulama Seçin"]</option>
+                            <option value="">@Localizer["SelectApplication"]</option>
                         }
                         @if (ViewBag.Applications != null)
                         {
@@ -48,7 +48,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <button id="filterUsersBtn" class="btn btn-primary">@Localizer["Göster"]</button>
+                    <button id="filterUsersBtn" class="btn btn-primary">@Localizer["Show"]</button>
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="claimsModalLabel">@Localizer["Yetkileri Düzenle"]</h5>
+                <h5 class="modal-title" id="claimsModalLabel">@Localizer["EditAuthorizations"]</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -79,14 +79,14 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Kapat"]</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@Localizer["Close"]</button>
                 @if (User.HasClaim(c => c.Type == "User" && c.Value == "EditUserClaims"))
                 {
-                    <button type="button" class="btn btn-primary" onclick="updateClaims()">@Localizer["Kaydet"]</button>
+                    <button type="button" class="btn btn-primary" onclick="updateClaims()">@Localizer["Save"]</button>
                 }
                 @if (User.HasClaim(c => c.Type == "User" && c.Value == "GetUserClaims") && !User.HasClaim(c => c.Type == "User" && c.Value == "EditUserClaims"))
                 {
-                    <button type="button" disabled class="btn btn-primary" onclick="updateClaims()">@Localizer["Kaydet"]</button>
+                    <button type="button" disabled class="btn btn-primary" onclick="updateClaims()">@Localizer["Save"]</button>
                 }
             </div>
         </div>
@@ -248,12 +248,12 @@
 
         function deleteUser(id) {
             Swal.fire({
-                title: '@Localizer["Emin misiniz?"]',
-                text: "@Localizer["Bu kaydı silmek istediğinizden emin misiniz?"]",
-                icon: '@Localizer["warning"]',
+                title: 'Emin misiniz?',
+                text: "Bu kaydı silmek istediğinizden emin misiniz?",
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["Evet, Sil!"]',
-                cancelButtonText: '@Localizer["Hayır, İptal Et"]',
+                confirmButtonText: 'Evet, Sil!',
+                cancelButtonText: 'Hayır, İptal Et',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -262,18 +262,18 @@
                         type: 'POST',
                         success: function (response) {
                             Swal.fire(
-                                '@Localizer["Silindi!"]',
-                                '@Localizer["Kayıt başarıyla silindi."]',
-                                '@Localizer["success"]'
+                                'Silindi!',
+                                'Kayıt başarıyla silindi.',
+                                'success'
                             ).then(() => {
                                 window.location.reload();
                             });
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Hata!"]',
-                                '@Localizer["Silme işlemi sırasında bir hata oluştu."]',
-                                '@Localizer["error"]'
+                                'Hata!',
+                                'Silme işlemi sırasında bir hata oluştu.',
+                                'error'
                             );
                         }
                     });
@@ -301,9 +301,9 @@
                 },
                 error: function () {
                     Swal.fire(
-                        '@Localizer["Hata!"]',
-                        '@Localizer["Yetkiler alınırken bir hata oluştu."]',
-                        '@Localizer["error"]'
+                        'Hata!',
+                        'Yetkiler alınırken bir hata oluştu.',
+                        'error'
                     );
                 }
             });
@@ -337,22 +337,22 @@
                 data: JSON.stringify({ userId: currentUserId, claims: claims }), // Use currentUserId and claims
                 success: function (response) {
                     Swal.fire(
-                        '@Localizer["Güncellendi!"]',
+                        'Güncellendi!',
                         response,
-                        '@Localizer["success"]'
+                        'success'
                     ).then(() => {
                         $('#claimsModal').modal('hide');
                     });
                 },
                 error: function (xhr) {
-                    let errorMessage = '@Localizer["Yetkiler güncellenirken bir hata oluştu."]';
+                    let errorMessage = 'Yetkiler güncellenirken bir hata oluştu.';
                     if (xhr.responseText) {
                         errorMessage = xhr.responseText;
                     }
                     Swal.fire(
-                        '@Localizer["Hata!"]',
+                        'Hata!',
                         errorMessage,
-                        '@Localizer["error"]'
+                        'error'
                     );
                 }
             });

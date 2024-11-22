@@ -4,7 +4,7 @@
 }
 
 <div class="container mt-5">
-    <h2>@Localizer["Your Profile"]</h2>
+    <h2>@Localizer["YourProfile"]</h2>
 
     <form asp-action="UpdateProfile" method="post">
         <input type="hidden" class="form-control" name="CompanyApplicationId" id="CompanyApplicationId" value="@Model.CompanyApplicationId">
@@ -16,12 +16,12 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="FirstName">@Localizer["First Name"]</label>
+            <label for="FirstName">@Localizer["FirstName"]</label>
             <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
         </div>
 
         <div class="form-group mb-3">
-            <label for="LastName">@Localizer["Last Name"]</label>
+            <label for="LastName">@Localizer["LastName"]</label>
             <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
         </div>
 
@@ -31,10 +31,10 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="PhoneNumber">@Localizer["Phone Number"]</label>
+            <label for="PhoneNumber">@Localizer["PhoneNumber"]</label>
             <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" />
         </div>
 
-        <button type="submit" class="btn btn-primary">@Localizer["Update Profile"]</button>
+        <button type="submit" class="btn btn-primary">@Localizer["UpdateProfile"]</button>
     </form>
 </div>

@@ -28,11 +28,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "Company" && c.Value == "GetAllCompanies"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Companies"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewCompanies"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "Company" && c.Value == "CreateCompany"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Company"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Company" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddCompany"]</a></li>
                         }
                     </ul>
                 </li>
@@ -49,11 +49,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "Application" && c.Value == "GetAllApplications"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Applications"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewApplications"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "Application" && c.Value == "CreateApplication"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Application"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Application" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddApplication"]</a></li>
                         }
                     </ul>
                 </li>
@@ -70,11 +70,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "GetAllCompanyApplications"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Company Applications"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewCompanyApplications"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "CreateCompanyApplication"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Company Application"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="CompanyApplication" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddCompanyApplication"]</a></li>
                         }
                     </ul>
                 </li>
@@ -91,11 +91,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "Role" && c.Value == "GetAllRoles"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Roles"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewRoles"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "Role" && c.Value == "CreateRole"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Role"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Role" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddRole"]</a></li>
                         }
                     </ul>
                 </li>
@@ -113,11 +113,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "User" && c.Value == "GetAllUsers"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Users"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewUsers"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "User" && c.Value == "CreateUser"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add User"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddUser"]</a></li>
                         }
                     </ul>
                 </li>
@@ -134,11 +134,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "GetAllTenants"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Index"><i class="ti-control-record"></i>@Localizer["View Tenants"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Index"><i class="ti-control-record"></i>@Localizer["ViewTenants"]</a></li>
                         }
                         @if (User.HasClaim(c => c.Type == "Tenant" && c.Value == "CreateTenant"))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Create"><i class="ti-control-record"></i>@Localizer["Add Tenant"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Tenant" asp-action="Create"><i class="ti-control-record"></i>@Localizer["AddTenant"]</a></li>
                         }
                     </ul>
                 </li>

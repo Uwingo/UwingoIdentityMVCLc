@@ -1,23 +1,23 @@
 ﻿@model IEnumerable<Tuple<CompanyApplicationDto, CompanyDto, ApplicationDto>>
 
 @{
-    ViewBag.Title = Localizer["Company Applications"];
+    ViewBag.Title = Localizer["CompanyApplications"];
 }
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">@Localizer["Company Applications"]</h4>
+                <h4 class="card-title">@Localizer["CompanyApplications"]</h4>
                 <p class="text-muted mb-0">
-                    @Localizer["Active Companies' Purchased Applications"]
+                    @Localizer["ActiveCompanies'PurchasedApplications"]
                 </p>
             </div>
             @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "CreateCompanyApplication"))
             {
                 <div class="card-body">
                     <div class="button-items">
-                        <a asp-action="Create" class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis">@Localizer["Add New Company Application"]</a>
+                        <a asp-action="Create" class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis">@Localizer["AddNewCompanyApplication"]</a>
                     </div>
                 </div>
             }
@@ -80,8 +80,8 @@
                             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>@Localizer["Company Name"]</th>
-                                        <th>@Localizer["Application Name"]</th>
+                                        <th>@Localizer["CompanyName"]</th>
+                                        <th>@Localizer["ApplicationName"]</th>
                                         <th>@Localizer["DbConnection"]</th>
                                         @if (User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "EditCompanyApplication") ||
                                             User.HasClaim(c => c.Type == "CompanyApplication" && c.Value == "DeleteCompanyApplication"))
@@ -120,7 +120,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-5">
                             <div class="dataTables_info" id="datatable-buttons_info" role="status" aria-live="polite">
-                                @Localizer["Showing {0} to {1} of {2} entries", ViewBag.PageNumber, ViewBag.PageSize, ViewBag.TotalRecords]
+                                @Localizer["Showing{0}To{1}Of{2}Entries", ViewBag.PageNumber, ViewBag.PageSize, ViewBag.TotalRecords]
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-7">
@@ -146,12 +146,12 @@
     <script>
         function confirmDelete(Id) {
             Swal.fire({
-                title: @Localizer["Are you sure?"],
-                text: @Localizer["You won't be able to revert this!"],
+                title: 'Are you sure?',
+                text: 'You wont be able to revert this!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: @Localizer["Yes, delete it!"],
-                cancelButtonText: @Localizer["No, cancel!"],
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -160,8 +160,8 @@
                         type: 'POST',
                         success: function (response) {
                             Swal.fire(
-                                @Localizer["Deleted!"],
-                                @Localizer["The application assignment has been deleted."],
+                                'Deleted!',
+                                'The application assignment has been deleted.',
                                 'success'
                             ).then(() => {
                                 location.reload();
@@ -169,8 +169,8 @@
                         },
                         error: function () {
                             Swal.fire(
-                                @Localizer["Error!"],
-                                @Localizer["There was an error deleting the assignment."],
+                                'Error!',
+                                'There was an error deleting the assignment.',
                                 'error'
                             );
                         }

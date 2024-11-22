@@ -2,10 +2,10 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewBag.Title = Localizer["Edit Role"];
+    ViewBag.Title = Localizer["EditRole"];
 }
 
-<h2>@Localizer["Edit Role"]</h2>
+<h2>@Localizer["EditRole"]</h2>
 
 <div class="form-group">
     <label for="Name">@Localizer["Name"]</label>
@@ -22,12 +22,12 @@
     <script>
         function myFunc() {
             Swal.fire({
-                title: '@Localizer["Are you sure?"]',
-                text: "@Localizer["You are about to update!"]",
+                title: 'Are you sure?',
+                text: "You are about to update!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["Yes, Update!"]',
-                cancelButtonText: '@Localizer["No, Cancel Update"]',
+                confirmButtonText: 'Yes, Update!',
+                cancelButtonText: 'No, Cancel Update',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -46,8 +46,8 @@
                         contentType: 'application/json',
                         success: function (role) {
                             Swal.fire(
-                                '@Localizer["Updated!"]',
-                                '@Localizer["Update completed successfully."]',
+                                'Updated!',
+                                'Update completed successfully.',
                                 'success'
                             ).then(() => {
                                 window.location.href = '@Url.Action("Index", "Role")';
@@ -55,8 +55,8 @@
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Error!"]',
-                                '@Localizer["An error occurred during update."]',
+                                'Error!',
+                                'An error occurred during update.',
                                 'error'
                             );
                         }

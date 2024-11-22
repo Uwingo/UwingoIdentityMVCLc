@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TenantDto>
 
 @{
-    ViewBag.Title = "Kiracılar";
+    ViewBag.Title = "Tenants";
 }
 
 <div class="row">
@@ -143,12 +143,12 @@
     <script>
         function deleteTenant(id) {
             Swal.fire({
-                title: '@Localizer["AreYouSure"]',
-                text: "@Localizer["DeleteConfirmation"]",
+                title: 'AreYouSure',
+                text: "DeleteConfirmation",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["YesDelete"]',
-                cancelButtonText: '@Localizer["NoCancel"]',
+                confirmButtonText: 'YesDelete',
+                cancelButtonText: 'NoCancel',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -157,16 +157,16 @@
                         type: 'POST',
                         success: function (response) {
                             Swal.fire(
-                                '@Localizer["Deleted"]',
-                                '@Localizer["DeletedMessage"]',
+                                'Deleted',
+                                'DeletedMessage',
                                 'success'
                             );
                             // Reload the page or update the table
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Error"]',
-                                '@Localizer["ErrorMessage"]',
+                                'Error',
+                                'ErrorMessage',
                                 'error'
                             );
                         }

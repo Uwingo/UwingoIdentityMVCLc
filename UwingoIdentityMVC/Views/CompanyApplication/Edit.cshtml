@@ -49,12 +49,12 @@
     <script>
         function submitEditForm() {
             Swal.fire({
-                title: '@Localizer["AreYouSure"]',
-                text: "@Localizer["YouAreAboutToUpdateThisAssignment"]",
+                title: 'AreYouSure',
+                text: "YouAreAboutToUpdateThisAssignment",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["YesUpdateIt"]',
-                cancelButtonText: '@Localizer["NoCancel"]',
+                confirmButtonText: 'YesUpdateIt',
+                cancelButtonText: 'NoCancel',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -72,8 +72,8 @@
                         contentType: 'application/json',
                         success: function (response) {
                             Swal.fire(
-                                '@Localizer["Updated"]',
-                                '@Localizer["TheAssignmentHasBeenUpdatedSuccessfully"]',
+                                'Updated',
+                                'TheAssignmentHasBeenUpdatedSuccessfully',
                                 'success'
                             ).then(() => {
                                 window.location.href = '@Url.Action("Index", "CompanyApplication")';
@@ -81,8 +81,8 @@
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Error"]',
-                                '@Localizer["ThereWasAnErrorUpdatingTheAssignment"]',
+                                'Error',
+                                'ThereWasAnErrorUpdatingTheAssignment',
                                 'error'
                             );
                         }

@@ -1,30 +1,30 @@
 ﻿@model ApplicationDto
 
 @{
-    ViewBag.Title = @Localizer["Uygulama Düzenle"];
+    ViewBag.Title = @Localizer["UpdateApplication"];
 }
 
-<h2>@Localizer["Uygulama Düzenle"]</h2>
+<h2>@Localizer["UpdateApplication"]</h2>
 
 <div class="form-group">
-    <label for="Name">@Localizer["Ad"]</label>
+    <label for="Name">@Localizer["Name"]</label>
     <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
 </div>
 
-<button type="button" name="button" id="update" class="btn btn-primary" onclick="myFunc()">@Localizer["Güncelle"]</button>
-<a asp-action="Index" class="btn btn-secondary">@Localizer["İptal"]</a>
+<button type="button" name="button" id="update" class="btn btn-primary" onclick="myFunc()">@Localizer["Update"]</button>
+<a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
 
 @section Scripts {
     <script>
         function myFunc() {
             console.log("girdim");
             Swal.fire({
-                title: '@Localizer["Emin misiniz?"]',
-                text: "@Localizer["Güncelleme işlemi yapmak üzeresiniz!"]",
+                title: 'Emin misiniz?',
+                text: "Güncelleme işlemi yapmak üzeresiniz!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '@Localizer["Evet, Güncelle!"]',
-                cancelButtonText: '@Localizer["Hayır, Güncellemeyi İptal Et"]',
+                confirmButtonText: 'Evet, Güncelle!',
+                cancelButtonText: 'Hayır, Güncellemeyi İptal Et',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {
@@ -43,8 +43,8 @@
                         contentType: 'application/json',
                         success: function (response) {
                             Swal.fire(
-                                '@Localizer["Güncellendi!"]',
-                                '@Localizer["Güncelleme başarıyla tamamlandı."]',
+                                'Güncellendi!',
+                                'Güncelleme başarıyla tamamlandı.',
                                 'success'
                             ).then(() => {
                                 window.location.href = '@Url.Action("Index", "Application")';
@@ -52,8 +52,8 @@
                         },
                         error: function () {
                             Swal.fire(
-                                '@Localizer["Hata!"]',
-                                '@Localizer["Güncelleme sırasında bir hata oluştu."]',
+                                'Hata!',
+                                'Güncelleme sırasında bir hata oluştu.',
                                 'error'
                             );
                         }

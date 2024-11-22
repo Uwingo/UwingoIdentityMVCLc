@@ -72,16 +72,16 @@
     <table id="usersTable" class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>@Localizer["Ad"]</th>
-                <th>@Localizer["Soyad"]</th>
-                <th>@Localizer["Kullanıcı Adı"]</th>
-                <th>@Localizer["E-posta"]</th>
-                <th>@Localizer["Telefon"]</th>
+                <th>@Localizer["Name"]</th>
+                <th>@Localizer["Surname"]</th>
+                <th>@Localizer["UserName"]</th>
+                <th>@Localizer["E-Mail"]</th>
+                <th>@Localizer["Phone"]</th>
                 @if (User.HasClaim(c => c.Type == "User" && c.Value == "EditUser") ||
                 User.HasClaim(c => c.Type == "User" && c.Value == "DeleteUser") ||
                 User.HasClaim(c => c.Type == "User" && c.Value == "GetUserClaims"))
                 {
-                    <th>@Localizer["İşlemler"]</th>
+                    <th>@Localizer["Actions"]</th>
                 }
             </tr>
         </thead>

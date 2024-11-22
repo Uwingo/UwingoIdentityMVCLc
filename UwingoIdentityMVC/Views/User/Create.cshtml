@@ -1,73 +1,73 @@
 ﻿@model Tuple<List<CompanyDto>, List<ApplicationDto>, List<RoleDto>>
 
 @{
-    ViewBag.Title = Localizer["Kullanıcı Oluştur"];
+    ViewBag.Title = Localizer["CreateUser"];
 }
 
-<h2>@Localizer["Kullanıcı Oluştur"]</h2>
+<h2>@Localizer["CreateUser"]</h2>
 
 <form class="form-horizontal auth-form" method="post" action="/User/Create">
 
     <div class="form-group mb-2">
-        <label class="form-label" for="firstName">@Localizer["Ad"]</label>
+        <label class="form-label" for="firstName">@Localizer["Name"]</label>
         <div class="input-group">
             <input type="text" class="form-control" name="firstName"
-                   id="firstName" placeholder="@Localizer["Ad"]">
+                   id="firstName" placeholder="@Localizer["Name"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="lastName">@Localizer["Soyadı"]</label>
+        <label class="form-label" for="lastName">@Localizer["Surname"]</label>
         <div class="input-group">
             <input type="text" class="form-control" name="lastName"
-                   id="lastName" placeholder="@Localizer["Soyadı"]">
+                   id="lastName" placeholder="@Localizer["Surname"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="username">@Localizer["Kullanıcı Adı"]</label>
+        <label class="form-label" for="username">@Localizer["Username"]</label>
         <div class="input-group">
             <input type="text" class="form-control" name="username"
-                   id="username" placeholder="@Localizer["Kullanıcı Adı"]">
+                   id="username" placeholder="@Localizer["Username"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="useremail">@Localizer["E-posta"]</label>
+        <label class="form-label" for="useremail">@Localizer["E-Mail"]</label>
         <div class="input-group">
             <input type="email" class="form-control" name="email"
-                   id="useremail" placeholder="@Localizer["E-posta"]">
+                   id="useremail" placeholder="@Localizer["E-Mail"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="userpassword">@Localizer["Şifre"]</label>
+        <label class="form-label" for="userpassword">@Localizer["Password"]</label>
         <div class="input-group">
             <input type="password" class="form-control" name="password"
-                   id="userpassword" placeholder="@Localizer["Şifre"]">
+                   id="userpassword" placeholder="@Localizer["Password"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="conf_password">@Localizer["Şifreyi Onayla"]</label>
+        <label class="form-label" for="conf_password">@Localizer["ConfirmPassword"]</label>
         <div class="input-group">
             <input type="password" class="form-control" name="conf-password"
-                   id="conf_password" placeholder="@Localizer["Şifreyi Onayla"]">
+                   id="conf_password" placeholder="@Localizer["ConfirmPassword"]">
         </div>
     </div><!--end form-group-->
 
     <div class="form-group mb-2">
-        <label class="form-label" for="PhoneNumber">@Localizer["Telefon Numarası"]</label>
+        <label class="form-label" for="PhoneNumber">@Localizer["PhoneNumber"]</label>
         <div class="input-group">
             <input type="text" class="form-control" name="PhoneNumber"
-                   id="PhoneNumber" placeholder="@Localizer["Telefon Numarası"]">
+                   id="PhoneNumber" placeholder="@Localizer["PhoneNumber"]">
         </div>
     </div><!--end form-group-->
     @if (User.IsInRole("Admin"))
     {
         <div class="form-group mb-2">
-            <label class="form-label" for="companySelect">@Localizer["Şirket"]</label>
-            <select class="form-select select2" name="CompanyId" id="companySelect" required data-placeholder="-- @Localizer["Şirket Seçiniz"] --">
+            <label class="form-label" for="companySelect">@Localizer["Company"]</label>
+            <select class="form-select select2" name="CompanyId" id="companySelect" required data-placeholder="-- @Localizer["SelectCompany"] --">
                 <option value=""></option>
                 @foreach (var company in Model.Item1)
                 {
@@ -77,9 +77,9 @@
         </div>
 
         <div class="form-group mb-2">
-            <label class="form-label" for="applicationSelect">@Localizer["Kullanıcının Uygulaması"]</label>
+            <label class="form-label" for="applicationSelect">@Localizer["User'sApplication"]</label>
             <select class="form-select" name="ApplicationId" id="applicationSelect" required>
-                <option value="">-- @Localizer["Uygulama Seçiniz"] --</option>
+                <option value="">-- @Localizer["SelectApplication"] --</option>
             </select>
         </div>
     }
@@ -87,8 +87,8 @@
     @if (User.IsInRole("TenantAdmin") || User.IsInRole("User"))
     {
         <div class="form-group mb-2">
-            <label class="form-label" for="applicationSelect">@Localizer["Kullanıcının Uygulaması"]</label>
-            <select class="form-select select2" name="ApplicationId" id="applicationSelect" required data-placeholder="-- @Localizer["Uygulama Seçiniz"] --">
+            <label class="form-label" for="applicationSelect">@Localizer["User'sApplication"]</label>
+            <select class="form-select select2" name="ApplicationId" id="applicationSelect" required data-placeholder="-- @Localizer["SelectApplication"] --">
                 <option value=""></option>
                 @foreach (var application in Model.Item2)
                 {
@@ -99,7 +99,7 @@
     }
 
     <div class="form-group mb-2">
-        <label class="form-label" for="roleSelect">@Localizer["Kullanıcının Rolü"]</label>
+        <label class="form-label" for="roleSelect">@Localizer["User'sRole"]</label>
         <select class="form-select select2" name="RoleId" id="roleSelect" required>
             <option value=""></option>
         </select>
@@ -112,7 +112,7 @@
                        id="customSwitchSuccess2">
                 <label class="form-label text-muted"
                        for="customSwitchSuccess2">
-                    @Localizer["Uwingo Kullanım Şartlarını kabul ediyorum"]
+                    @Localizer["IAcceptUwingoTermsOfUse"]
                 </label>
             </div>
         </div><!--end col-->
@@ -122,7 +122,7 @@
         <div class="col-12">
             <button class="btn btn-primary w-100 waves-effect waves-light"
                     type="submit">
-                @Localizer["Kaydol"] <i class="fas fa-sign-in-alt ms-1"></i>
+                @Localizer["SignUp"] <i class="fas fa-sign-in-alt ms-1"></i>
             </button>
         </div><!--end col-->
     </div><!--end form-group-->
@@ -140,18 +140,18 @@
                         success: function (data) {
                             console.log(data);
                             $('#applicationSelect').empty();
-                            $('#applicationSelect').append('<option value="">-- @Localizer["Uygulama Seçiniz"] --</option>');
+                            $('#applicationSelect').append('<option value="">-- Uygulama Seçiniz --</option>');
                             $.each(data, function (index, application) {
                                 $('#applicationSelect').append(new Option(application.name, application.id));
                             });
                         },
                         error: function () {
-                            alert('@Localizer["Uygulamalar getirilirken bir hata oluştu."]');
+                            alert('Uygulamalar getirilirken bir hata oluştu.');
                         }
                     });
                 } else {
                     $('#applicationSelect').empty();
-                    $('#applicationSelect').append('<option value="">-- @Localizer["Uygulama Seçiniz"] --</option>');
+                    $('#applicationSelect').append('<option value="">-- Uygulama Seçiniz --</option>');
                 }
             });
 
@@ -165,17 +165,17 @@
                         type: 'GET',
                         data: { companyId: companyId, applicationId: applicationId },
                         success: function (data) {
-                            $('#roleSelect').empty().append('<option value="">-- @Localizer["Rol Seçiniz"] --</option>');
+                            $('#roleSelect').empty().append('<option value="">-- Rol Seçiniz --</option>');
                             $.each(data, function (index, role) {
                                 $('#roleSelect').append(new Option(role.name, role.id));
                             });
                         },
                         error: function () {
-                            alert('@Localizer["Roller getirilirken bir hata oluştu."]');
+                            alert('Roller getirilirken bir hata oluştu.');
                         }
                     });
                 } else {
-                    $('#roleSelect').empty().append('<option value="">-- @Localizer["Rol Seçiniz"] --</option>');
+                    $('#roleSelect').empty().append('<option value="">-- Rol Seçiniz --</option>');
                 }
             });
         });
